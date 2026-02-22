@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión Veterinaria - CRUD</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <header>
+        <h1>Veterinaria App</h1>
+        <button id="logoutBtn" style="display:none;">Cerrar Sesión</button>
+    </header>
+
+    <main>
+        <!-- Sección de Autenticación -->
+        <section id="authSection">
+            <div class="auth-box">
+                <h2>Iniciar Sesión</h2>
+                <form id="loginForm">
+                    <input type="email" id="loginEmail" placeholder="Email" required>
+                    <input type="password" id="loginPassword" placeholder="Contraseña" required>
+                    <button type="submit">Ingresar</button>
+                </form>
+                <p id="authError" class="error-msg"></p>
+                <hr>
+                <div class="register-info">
+                   <p><i>Nota: Para probar, asegúrate de estar registrado vía POSTMAN en <b>/api/login/register</b> o usar las credenciales que ya tengas.</i></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección de Mascotas (Protegida) -->
+        <section id="appSection" style="display:none;">
+            <h2>Gestión de Mascotas</h2>
+            
+            <div class="crud-container">
+                <!-- Formulario Crear/Editar -->
+                <div class="form-panel">
+                    <h3 id="formTitle">Agregar Nueva Mascota</h3>
+                    <form id="mascotaForm">
+                        <input type="hidden" id="mascotaId">
+                        
+                        <label for="mNombre">Nombre:</label>
+                        <input type="text" id="mNombre" required>
+                        
+                        <label for="mEspecie">Especie:</label>
+                        <input type="text" id="mEspecie" required>
+                        
+                        <label for="mFecha">Fecha de Nacimiento:</label>
+                        <input type="number" id="mFecha" placeholder="Ej: 2018 (Año)" required>
+                        
+                        <label for="mDueno">ID del Dueño:</label>
+                        <input type="number" id="mDueno" required>
+                        
+                        <div class="form-actions">
+                            <button type="submit" id="saveBtn">Guardar</button>
+                            <button type="button" id="cancelBtn" style="display:none;" class="btn-secondary">Cancelar</button>
+                        </div>
+                    </form>
+                    <p id="formFeedback" class="feedback-msg"></p>
+                </div>
+
+                <!-- Lista de Mascotas -->
+                <div class="list-panel">
+                    <h3>Tus Mascotas Asignadas</h3>
+                    <button id="refreshBtn" class="btn-refresh">🔄 Actualizar Lista</button>
+                    <table id="mascotasTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Especie</th>
+                                <th>Nacimiento</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="mascotasList">
+                            <!-- Filas dinámicas generadas en app.js -->
+                        </tbody>
+                    </table>
+                    <p id="tableMsg"></p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>
