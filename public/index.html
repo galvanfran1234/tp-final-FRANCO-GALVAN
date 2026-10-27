@@ -3,13 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión Veterinaria - CRUD</title>
+    <title>Clínica Veterinaria - Gestión y CRUD</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
     <header>
-        <h1>Veterinaria App</h1>
+        <div class="header-brand">
+            <h1>🐾 Veterinaria Patitas Felices</h1>
+            <span id="userGreeting" class="user-greeting"></span>
+        </div>
         <button id="logoutBtn" style="display:none;">Cerrar Sesión</button>
     </header>
 
@@ -17,23 +20,48 @@
         <!-- Sección de Autenticación -->
         <section id="authSection">
             <div class="auth-box">
-                <h2>Iniciar Sesión</h2>
-                <form id="loginForm">
-                    <input type="email" id="loginEmail" placeholder="Email" required>
-                    <input type="password" id="loginPassword" placeholder="Contraseña" required>
-                    <button type="submit">Ingresar</button>
-                </form>
-                <p id="authError" class="error-msg"></p>
-                <hr>
-                <div class="register-info">
-                   <p><i>Nota: Para probar, asegúrate de estar registrado vía POSTMAN en <b>/api/login/register</b> o usar las credenciales que ya tengas.</i></p>
+                <!-- Botón de acceso rápido para recruiters / portafolio -->
+                <div class="demo-card">
+                    <h4>💼 Acceso Rápido para Portafolio</h4>
+                    <p>Prueba el sistema inmediatamente sin registrarte:</p>
+                    <button id="btnQuickDemo" type="button" class="btn-demo">⚡ Entrar como Demo (1-Click)</button>
+                    <small>Email: <code>demo@veterinaria.com</code> | Pass: <code>Password123!</code></small>
                 </div>
+
+                <div class="auth-tabs">
+                    <button id="tabLogin" type="button" class="tab-btn active">Iniciar Sesión</button>
+                    <button id="tabRegister" type="button" class="tab-btn">Registrarse</button>
+                </div>
+
+                <!-- Formulario de Login -->
+                <form id="loginForm">
+                    <input type="email" id="loginEmail" placeholder="Correo electrónico" required>
+                    <input type="password" id="loginPassword" placeholder="Contraseña" required>
+                    <button type="submit" class="btn-submit">Ingresar</button>
+                </form>
+
+                <!-- Formulario de Registro -->
+                <form id="registerForm" style="display:none;">
+                    <input type="text" id="regNombre" placeholder="Nombre (ej: Franco)" required minlength="3">
+                    <input type="text" id="regApellido" placeholder="Apellido (ej: Galvan)" required minlength="3">
+                    <input type="text" id="regMatricula" placeholder="N° Matrícula (ej: VET-4501)" required minlength="3">
+                    <input type="text" id="regEspecialidad" placeholder="Especialidad (ej: Cirugía / Clínica)">
+                    <input type="email" id="regEmail" placeholder="Correo electrónico" required>
+                    <input type="password" id="regPassword" placeholder="Contraseña (mín 8 car., Mayús, Núm, Simb)" required minlength="8">
+                    <button type="submit" class="btn-submit">Crear Cuenta</button>
+                </form>
+
+                <p id="authError" class="error-msg"></p>
+                <p id="authSuccess" class="success-msg"></p>
             </div>
         </section>
 
         <!-- Sección de Mascotas (Protegida) -->
         <section id="appSection" style="display:none;">
-            <h2>Gestión de Mascotas</h2>
+            <div class="app-header-bar">
+                <h2>Gestión de Mascotas</h2>
+                <div class="stats-badge" id="statsBadge">Mascotas activas</div>
+            </div>
             
             <div class="crud-container">
                 <!-- Formulario Crear/Editar -->
@@ -43,19 +71,19 @@
                         <input type="hidden" id="mascotaId">
                         
                         <label for="mNombre">Nombre:</label>
-                        <input type="text" id="mNombre" required>
+                        <input type="text" id="mNombre" placeholder="Ej: Firulais" required>
                         
                         <label for="mEspecie">Especie:</label>
-                        <input type="text" id="mEspecie" required>
+                        <input type="text" id="mEspecie" placeholder="Ej: Canino, Felino..." required>
                         
-                        <label for="mFecha">Fecha de Nacimiento:</label>
-                        <input type="number" id="mFecha" placeholder="Ej: 2018 (Año)" required>
+                        <label for="mFecha">Año o Fecha de Nacimiento:</label>
+                        <input type="text" id="mFecha" placeholder="Ej: 2021 o 2021-05-12" required>
                         
                         <label for="mDueno">ID del Dueño:</label>
-                        <input type="number" id="mDueno" required>
+                        <input type="number" id="mDueno" placeholder="Ej: 1" required min="1">
                         
                         <div class="form-actions">
-                            <button type="submit" id="saveBtn">Guardar</button>
+                            <button type="submit" id="saveBtn">Guardar Mascota</button>
                             <button type="button" id="cancelBtn" style="display:none;" class="btn-secondary">Cancelar</button>
                         </div>
                     </form>
@@ -64,8 +92,10 @@
 
                 <!-- Lista de Mascotas -->
                 <div class="list-panel">
-                    <h3>Tus Mascotas Asignadas</h3>
-                    <button id="refreshBtn" class="btn-refresh">🔄 Actualizar Lista</button>
+                    <div class="list-header">
+                        <h3>Tus Pacientes Asignados</h3>
+                        <button id="refreshBtn" class="btn-refresh">🔄 Actualizar</button>
+                    </div>
                     <table id="mascotasTable">
                         <thead>
                             <tr>
@@ -73,6 +103,7 @@
                                 <th>Nombre</th>
                                 <th>Especie</th>
                                 <th>Nacimiento</th>
+                                <th>Dueño (ID)</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>

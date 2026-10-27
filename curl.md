@@ -1,112 +1,49 @@
-### 🔐 Autenticación (Público)
+# Guía de Pruebas con cURL
 
-**Registrar un usuario**
+Esta guía contiene peticiones `cURL` para probar manualmente todos los endpoints de la API.
+
+---
+
+### 🔐 1. Autenticación (Rutas Públicas)
+
+**Registrar un nuevo veterinario**
 ```bash
 curl -X POST http://localhost:3000/api/login/register \
   -H "Content-Type: application/json" \
   -d '{
-    "username": "Juan_Perez",
-    "email": "juan@example.com",
+    "nombre": "Franco",
+    "apellido": "Galvan",
+    "matricula": "VET-12345",
+    "especialidad": "Cirugía",
+    "email": "franco@example.com",
     "password": "Password123!"
   }'
 ```
 
-**Iniciar sesión (Login)**
-*(Este te devuelve el token que vas a usar en las demás peticiones)*
+**Iniciar sesión (Login)**  
+Devuelve el token JWT que debes usar en las rutas protegidas:
 ```bash
 curl -X POST http://localhost:3000/api/login/login \
   -H "Content-Type: application/json" \
   -d '{
-    "email": "juan@example.com",
+    "email": "demo@veterinaria.com",
     "password": "Password123!"
   }'
 ```
 
 ---
 
-### 👨‍⚕️ Veterinarios
+### 🐾 2. Mascotas (Protegido - Requiere Token)
 
-**Obtener todos los veterinarios** (Protegido)
+> Exporta tu token en la terminal: `TOKEN="tu_token_aqui"`
+
+**Obtener mascotas de tu cuenta**
 ```bash
-curl -X GET http://localhost:3000/api/veterinarios/ \
+curl -X GET http://localhost:3000/api/mascotas \
   -H "Authorization: Bearer $TOKEN"
 ```
 
-**Crear un veterinario** (Protegido - Requiere rol de admin)
-```bash
-curl -X POST http://localhost:3000/api/veterinarios/create \
-  -H "Authorization: Bearer $TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "nombre": "Dr. Carlos",
-    "especialidad": "Cirugía"
-  }'
-```
-
-**Actualizar un veterinario** (Protegido - Requiere rol de admin)
-```bash
-curl -X PUT http://localhost:3000/api/veterinarios/update/1 \
-  -H "Authorization: Bearer $TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "especialidad": "Medicina General"
-  }'
-```
-
-**Eliminar un veterinario** (Protegido - Requiere rol de admin)
-```bash
-curl -X DELETE http://localhost:3000/api/veterinarios/delete/1 \
-  -H "Authorization: Bearer $TOKEN"
-```
-
----
-
-### 🧍 Dueños
-
-**Obtener todos los dueños** (Protegido)
-```bash
-curl -X GET http://localhost:3000/api/dueno/ \
-  -H "Authorization: Bearer $TOKEN"
-```
-
-**Crear un dueño** (Protegido)
-```bash
-curl -X POST http://localhost:3000/api/dueno/create \
-  -H "Authorization: Bearer $TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "nombre": "Maria Gomez",
-    "telefono": "123456789"
-  }'
-```
-
-**Actualizar un dueño** (Protegido)
-```bash
-curl -X PUT http://localhost:3000/api/dueno/update/1 \
-  -H "Authorization: Bearer $TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "telefono": "987654321"
-  }'
-```
-
-**Eliminar un dueño** (Protegido)
-```bash
-curl -X DELETE http://localhost:3000/api/dueno/delete/1 \
-  -H "Authorization: Bearer $TOKEN"
-```
-
----
-
-### 🐶 Mascotas
-
-**Obtener todas las mascotas** (Protegido)
-```bash
-curl -X GET http://localhost:3000/api/mascotas/ \
-  -H "Authorization: Bearer $TOKEN"
-```
-
-**Crear una mascota** (Protegido)
+**Crear una mascota**
 ```bash
 curl -X POST http://localhost:3000/api/mascotas/create \
   -H "Authorization: Bearer $TOKEN" \
@@ -114,22 +51,25 @@ curl -X POST http://localhost:3000/api/mascotas/create \
   -d '{
     "nombre": "Firulais",
     "especie": "Perro",
-    "raza": "Mestizo",
-    "dueno_id": 1
+    "fecha_nacimiento": "2020",
+    "id_dueno": 1
   }'
 ```
 
-**Actualizar una mascota** (Protegido)
+**Actualizar una mascota**
 ```bash
 curl -X PUT http://localhost:3000/api/mascotas/update/1 \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
-    "peso": 15.5
+    "nombre": "Firulais Actualizado",
+    "especie": "Perro",
+    "fecha_nacimiento": "2020",
+    "id_dueno": 1
   }'
 ```
 
-**Eliminar una mascota** (Protegido)
+**Eliminar una mascota**
 ```bash
 curl -X DELETE http://localhost:3000/api/mascotas/delete/1 \
   -H "Authorization: Bearer $TOKEN"
@@ -137,59 +77,54 @@ curl -X DELETE http://localhost:3000/api/mascotas/delete/1 \
 
 ---
 
-### 📋 Historial Clínico
+### 🧍 3. Dueños (Protegido)
 
-**Obtener historiales clínicos** (Protegido)
+**Obtener dueños**
 ```bash
-curl -X GET http://localhost:3000/api/historial_clinico/ \
+curl -X GET http://localhost:3000/api/dueno \
   -H "Authorization: Bearer $TOKEN"
 ```
 
-**Crear una entrada de historial** (Protegido)
+**Crear un dueño**
+```bash
+curl -X POST http://localhost:3000/api/dueno/create \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "nombre": "Juan",
+    "apellido": "Perez",
+    "telefono": 1145678901,
+    "direccion": "Av. Corrientes 1234"
+  }'
+```
+
+---
+
+### 📋 4. Historial Clínico (Protegido)
+
+**Obtener historiales**
+```bash
+curl -X GET http://localhost:3000/api/historial_clinico \
+  -H "Authorization: Bearer $TOKEN"
+```
+
+**Crear historial clínico**
 ```bash
 curl -X POST http://localhost:3000/api/historial_clinico/create \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
-    "mascota_id": 1,
-    "descripcion": "Chequeo de rutina",
-    "fecha": "2023-11-20"
+    "id_mascota": 1,
+    "descripcion": "Vacunación antirrábica aplicada correctamente."
   }'
-```
-
-**Actualizar una entrada de historial** (Protegido)
-```bash
-curl -X PUT http://localhost:3000/api/historial_clinico/update/1 \
-  -H "Authorization: Bearer $TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "descripcion": "Chequeo de rutina + Vancuna Antirrábica"
-  }'
-```
-
-**Eliminar una entrada de historial** (Protegido)
-```bash
-curl -X DELETE http://localhost:3000/api/historial_clinico/delete/1 \
-  -H "Authorization: Bearer $TOKEN"
 ```
 
 ---
 
-### ⚙️ Otras Rutas de Prueba
+### 👨‍⚕️ 5. Gestión de Colegas (Exclusivo Administradores)
 
-**API Saludo** (Público)
+**Listar todos los veterinarios**
 ```bash
-curl -X GET http://localhost:3000/api/saludo
-```
-
-**Ruta Protegida General** (Protegido)
-```bash
-curl -X GET http://localhost:3000/protected \
-  -H "Authorization: Bearer $TOKEN"
-```
-
-**Ruta Admin General** (Protegido - Requiere rol de admin)
-```bash
-curl -X GET http://localhost:3000/admin \
-  -H "Authorization: Bearer $TOKEN"
+curl -X GET http://localhost:3000/api/veterinarios \
+  -H "Authorization: Bearer $TOKEN_ADMIN"
 ```

@@ -4,20 +4,20 @@ import { AppError } from '../types/appError';
 export type mascotasRow = mascotas & RowDataPacket;
 
 export interface mascotas {
-  id: number,
-  nombre: string,
-  especie: string,
-  fecha_nacimiento: number,
-  id_dueno: number,
-  id_veterinario: number
+  id: number;
+  nombre: string;
+  especie: string;
+  fecha_nacimiento: string | number;
+  id_dueno: number;
+  id_veterinario: number;
 }
 
 export interface mascotasDTO {
-  nombre: string,
-  especie: string,
-  fecha_nacimiento: number,
-  id_dueno: number,
-  id_veterinario: number
+  nombre: string;
+  especie: string;
+  fecha_nacimiento: string | number;
+  id_dueno: number;
+  id_veterinario: number;
 }
 
 export const getAllMascotas = async (id_veterinario: number): Promise<mascotasRow[]> => {
@@ -28,7 +28,7 @@ export const getAllMascotas = async (id_veterinario: number): Promise<mascotasRo
   `, [id_veterinario]);
 
   return rows;
-}
+};
 
 export const createMascota = async (data: mascotasDTO): Promise<void> => {
   const { nombre, especie, fecha_nacimiento, id_dueno, id_veterinario } = data;
@@ -37,7 +37,7 @@ export const createMascota = async (data: mascotasDTO): Promise<void> => {
     'INSERT INTO mascotas (nombre, especie, fecha_nacimiento, id_dueno, id_veterinario) VALUES (?, ?, ?, ?, ?)',
     [nombre, especie, fecha_nacimiento, id_dueno, id_veterinario]
   );
-}
+};
 
 export const deleteMascotaById = async (id: number, id_veterinario: number): Promise<void> => {
   const [result] = await pool.query(
@@ -47,7 +47,7 @@ export const deleteMascotaById = async (id: number, id_veterinario: number): Pro
   if ((result as any).affectedRows === 0) {
     throw new AppError('No se encontró la mascota o no tienes permisos para eliminarla.', 404);
   }
-}
+};
 
 export const updateMascotaById = async (id: number, data: mascotasDTO, id_veterinario: number): Promise<void> => {
   const { nombre, especie, fecha_nacimiento, id_dueno } = data;
@@ -58,4 +58,4 @@ export const updateMascotaById = async (id: number, data: mascotasDTO, id_veteri
   if ((result as any).affectedRows === 0) {
     throw new AppError('No se encontró la mascota o no tienes permisos para actualizarla.', 404);
   }
-}
+};
